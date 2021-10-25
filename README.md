@@ -32,6 +32,11 @@ The version number of a the JavaKeystore Windows AnyAgent can be verified by rig
 The JavaKeystore Windows AnyAgent has been tested against Keyfactor version 8.5.2 but should work against earlier or later versions.
 
 
+## Keyfactor Orchestrator Platform Supported
+
+The JavaKeystore Windows AnyAgent is compatible only with the Keyfactor Windows Orchestrator.  For a version of this integration compatible with the Keyfactor Universal Orchestrator, please go to the following repository => https://github.com/Keyfactor/jks-remote-orchestrator.
+
+
 ## Security Considerations
 
 **For Linux orchestrated servers:**
