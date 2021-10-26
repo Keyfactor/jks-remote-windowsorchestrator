@@ -1,4 +1,10 @@
-v1.4
+v1.4.1
+- Fix certificate store create bug where seed cert is added to existing store
+
+v1.4.0
+- Handle embedded spaces in store path on windows servers
+
+v1.3
 - Add config option to use Negotiate when connecting to Windows servers via WinRM
 - Updated Renci.SSH.Net reference
 
