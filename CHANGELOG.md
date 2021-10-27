@@ -1,3 +1,6 @@
+v1.5
+- Modify the Management-Create job to remove the self-signed "New Certificate" seed certificate after it is added during store creation.
+
 v1.4.1
 - Fix certificate store create bug where seed cert is added to existing store
 
