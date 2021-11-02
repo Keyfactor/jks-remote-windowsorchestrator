@@ -37,6 +37,7 @@ The JavaKeystore Windows AnyAgent has been tested against Keyfactor version 8.5.
 **For Linux orchestrated servers:**
 1. The JavaKeystore AnyAgent makes use of the Keytool program and other common Linux commands.  If the credentials you will be connecting with will need elevated access to run these commands, you must set the id up as a sudoer with no password necessary and set the config.json "UseSudo" value to "Y" (See Section 4 regarding the config.json file).  The full list of these commands below:
     * keytool
+    * echo
     * rm
     * ls
     * find
