@@ -1,3 +1,6 @@
+v1.6
+- Fix bug when creating certificate store on Windows server
+
 v1.5
 - Modify the Management-Create job to remove the self-signed "New Certificate" seed certificate after it is added during store creation.
 
