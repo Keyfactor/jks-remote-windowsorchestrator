@@ -12,6 +12,8 @@ using System.Text;
 using System.Threading;
 using Newtonsoft.Json;
 
+using CSS.PKI.PEM;
+
 using JavaKeyStoreSSH.RemoteHandlers;
 using Keyfactor.Extensions.Pam.Utilities;
 
@@ -217,7 +219,7 @@ namespace JavaKeyStoreSSH
             int chainLength = GetChainLength(result);
             for (int i = 0; i < chainLength; i++)
             {
-                certChain.Add(result.Substring(result.IndexOf(BEG_DELIM), result.IndexOf(END_DELIM) - result.IndexOf(BEG_DELIM) + END_DELIM.Length));
+                certChain.Add(RemovePEMHeader(result.Substring(result.IndexOf(BEG_DELIM), result.IndexOf(END_DELIM) - result.IndexOf(BEG_DELIM) + END_DELIM.Length)));
                 result = result.Substring(result.IndexOf(END_DELIM) + END_DELIM.Length);
             }
 
@@ -397,6 +399,11 @@ namespace JavaKeyStoreSSH
             {
                 throw new JKSException($"Error attempting to parse certficate store path={StorePath}, file name={StoreFileName}.", ex);
             }
+        }
+
+        private string RemovePEMHeader(string pem)
+        {
+            return string.IsNullOrEmpty(pem) ? string.Empty : PemUtilities.DERToPEM(PemUtilities.PEMToDER(pem), PemUtilities.PemObjectType.NoHeaders);
         }
 
         private int GetChainLength(string certificates)
