@@ -1,3 +1,7 @@
+v1.7
+- Add new config.json option: UseSCP, which if set to "Y" will use SCP rather than SFTP to upload certificate files
+- Bug fix for rare instance where certificates with a specific random text sequence in their PEM format causes and error
+
 v1.6
 - Fix bug when creating certificate store on Windows server
 
