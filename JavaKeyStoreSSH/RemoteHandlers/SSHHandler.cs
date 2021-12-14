@@ -91,33 +91,61 @@ namespace JavaKeyStoreSSH.RemoteHandlers
 
             try
             {
-                using (SftpClient client = new SftpClient(Connection))
+                if (ApplicationSettings.UseSCP)
                 {
-                    try
+                    using (ScpClient client = new ScpClient(Connection))
                     {
-                        client.Connect();
-                        client.ChangeDirectory(FormatFTPPath(path));
-
-                        using (MemoryStream stream = new MemoryStream(certBytes))
+                        try
                         {
-                            client.UploadFile(stream, fileName);
+                            client.Connect();
+
+                            using (MemoryStream stream = new MemoryStream(certBytes))
+                            {
+                                client.Upload(stream, FormatFTPPath(path + $"/{fileName}"));
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Debug("Exception during SCP upload...");
+                            Logger.Debug($"Upload Exception: {ExceptionHandler.FlattenExceptionMessages(ex, ex.Message)}");
+                            throw ex;
+                        }
+                        finally
+                        {
+                            client.Disconnect();
                         }
                     }
-                    catch (Exception ex)
+                }
+                else
+                {
+                    using (SftpClient client = new SftpClient(Connection))
                     {
-                        Logger.Debug("Exception during upload...");
-                        Logger.Debug($"Upload Exception: {ExceptionHandler.FlattenExceptionMessages(ex, ex.Message)}");
-                        throw ex;
-                    }
-                    finally
-                    {
-                        client.Disconnect();
+                        try
+                        {
+                            client.Connect();
+                            client.ChangeDirectory(FormatFTPPath(path));
+
+                            using (MemoryStream stream = new MemoryStream(certBytes))
+                            {
+                                client.UploadFile(stream, fileName);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Debug("Exception during SFTP upload...");
+                            Logger.Debug($"Upload Exception: {ExceptionHandler.FlattenExceptionMessages(ex, ex.Message)}");
+                            throw ex;
+                        }
+                        finally
+                        {
+                            client.Disconnect();
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                Logger.Debug($"Exception making SFTP connection - {ex.Message}");
+                Logger.Debug($"Exception making SFTP or SCP connection - {ex.Message}");
                 throw ex;
             }
         }

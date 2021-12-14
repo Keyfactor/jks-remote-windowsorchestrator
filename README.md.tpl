@@ -173,9 +173,11 @@ As a configuration step, you must modify the config.json file, found in the plug
 
 "SeparateUploadFilePath": "/path/to/upload/folder/",
 
-"FindKeytoolPathOnWindows": "N"
+"FindKeytoolPathOnWindows": "N",
 
-"UseNegotiateAuth": "N"
+"UseNegotiateAuth": "N",
+
+"UseSCP": "N"
 
 }
 
@@ -196,6 +198,8 @@ Modify the six values as appropriate (all must be present regardless of Linux or
 **FindKeytoolPathOnWindows** (Windows only) – "Y" – The AnyAgent will search all available logical drives of the orchestrated server for the location of the "keytool.exe" program.  This path will be used for all subsequent "keytool" commands. "N" – The "keytool.exe" program is assumed to be in the system environment %PATH% variable.
 
 **UseNegotiateAuth** (Windows only) – Y/N - Determines if WinRM should use Negotiate (Y) when connecting to the remote server.
+
+**UseSCP** (Optional, Linux only) - Y/N - Detemines if SCP (Y) or SFTP (N or ) should be used in uploading certificate files during Management-Add jobs
 
 
 Json format that MUST be returned by script identified in **PreRunScript** if **UsePrerunScript** is set to "Y":
