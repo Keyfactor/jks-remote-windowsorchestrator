@@ -7,5 +7,6 @@
   "SeparateUploadFilePath": "/path/to/upload/folder/",
   "FindKeytoolPathOnWindows": "N",
   "UseNegotiateAuth": "N",
-  "UseSCP":  "Y"
+  "UseSFTP": "N",
+  "UseSCP": "N"
 }

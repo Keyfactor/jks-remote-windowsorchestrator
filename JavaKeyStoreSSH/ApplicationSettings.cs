@@ -23,6 +23,7 @@ namespace JavaKeyStoreSSH
         public static string SeparateUploadFilePath { get; set; }
         public static bool FindKeytoolPathOnWindows { get; set; }
         public static bool UseNegotiateAuth { get; set; }
+        public static bool UseSFTP { get; set; }
         public static bool UseSCP { get; set; }
 
         public static void Initialize(string currLocation)
@@ -59,7 +60,9 @@ namespace JavaKeyStoreSSH
             SeparateUploadFilePath = AddTrailingSlash(jsonContents.SeparateUploadFilePath.Value);
             FindKeytoolPathOnWindows = jsonContents.FindKeytoolPathOnWindows.Value.Equals("Y", System.StringComparison.OrdinalIgnoreCase);
             UseNegotiateAuth = jsonContents.UseNegotiateAuth.Value.Equals("Y", System.StringComparison.OrdinalIgnoreCase);
+            UseSFTP = jsonContents.UseSFTP == null || !jsonContents.UseSFTP.Value.Equals("Y", System.StringComparison.OrdinalIgnoreCase) ? false : true;
             UseSCP = jsonContents.UseSCP == null || !jsonContents.UseSCP.Value.Equals("Y", System.StringComparison.OrdinalIgnoreCase) ? false : true;
+            UseSFTP = !UseSFTP && !UseSCP ? true : UseSFTP;
         }
 
         private static string AddTrailingSlash(string path)
