@@ -42,7 +42,7 @@ The Java Keystore Windows AnyAgent has been tested against Keyfactor version 8.5
     * find
     * dos2unix (only if running pre-run script - see "4. Update Settings in config.json")
     * chmod (only if running pre-run script - see "4. Update Settings in config.json")
-2. The Java Keystore AnyAgent makes use of SFTP to transfer files to and from the orchestrated server.  SFTP will not make use of sudo, so all folders containing certificate stores will need to allow SFTP file transfer.  If this is not possible, set the values in the config.json appropriately to use an alternative upload/download folder that does have SFTP file transfer (See Section 4 regarding the config.json file).
+2. The Java Keystore AnyAgent makes use of SFTP or SCP to transfer files to and from the orchestrated server.  SFTP and SCP will not make use of sudo, so all folders containing certificate stores will need to allow SFTP/SCP file transfer.  If this is not possible, set the values in the config.json appropriately to use an alternative upload/download folder that does have SFTP/SCP file transfer permission (See Section 4 regarding the config.json file).
 3. To manage Java keystores, Java itself must be installed on the orchestrated server.  With Java comes the Keytool program.  The path where Java and Keytool reside must be in the $PATH system environment variable on the orchestrated server.  If this is not possible, please review Section 4 regarding the config.json file to find information on setting up a client-written bash script to find the path where Keytool resides.
 
 **For Windows orchestrated servers:**
@@ -199,7 +199,9 @@ Modify the six values as appropriate (all must be present regardless of Linux or
 
 **UseNegotiateAuth** (Windows only) – Y/N - Determines if WinRM should use Negotiate (Y) when connecting to the remote server.
 
-**UseSCP** (Optional, Linux only) - Y/N - Detemines if SCP (Y) or SFTP (N) should be used in uploading certificate files during Management-Add jobs
+**UseSFTP** (Optional, Linux only) - Y/N - See "UseSCP" below.
+
+**UseSCP** (Optional, Linux only) - Y/N - UseSFTP and UseSCP are used together to determine the appropriate file transfer protocol to use when uploading/downloading files during an orchestrator job.  If both of these files are set to "N" or missing altogether, SFTP will be used.  If either is set to "Y" with the other missing or not set to "Y", the protocol set to "Y" will be used.  If both are set to "Y", SFTP will be attempted first.  If that fails, SCP will be tried.
 
 
 Json format that MUST be returned by script identified in **PreRunScript** if **UsePrerunScript** is set to "Y":
