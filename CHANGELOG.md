@@ -1,3 +1,6 @@
+v1.8
+- Add UseSFTP config option so both SFTP and SCP could be attempted to transfer files
+
 v1.7
 - Add new config.json option: UseSCP, which if set to "Y" will use SCP rather than SFTP to upload certificate files
 - Bug fix for rare instance where certificates with a specific random text sequence in their PEM format causes and error
