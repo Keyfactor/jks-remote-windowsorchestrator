@@ -177,6 +177,8 @@ As a configuration step, you must modify the config.json file, found in the plug
 
 "UseNegotiateAuth": "N",
 
+"UseSFTP: "N",
+
 "UseSCP": "N"
 
 }
