@@ -1,3 +1,6 @@
+v1.8
+- Limit the valid characters that can be used for store paths to protect against command injection.
+
 v1.7
 - Add new config.json option: UseSCP, which if set to "Y" will use SCP rather than SFTP to upload certificate files
 - Bug fix for rare instance where certificates with a specific random text sequence in their PEM format causes and error
