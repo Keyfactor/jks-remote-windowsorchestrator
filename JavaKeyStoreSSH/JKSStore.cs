@@ -22,6 +22,7 @@ namespace JavaKeyStoreSSH
 {
     internal class JKSStore
     {
+        private const string LINUX_PERMISSION_REGEXP = "^[0-7]{3}$";
         private const string NO_EXTENSION = "noext";
         private const string FULL_SCAN = "fullscan";
 
@@ -82,7 +83,7 @@ namespace JavaKeyStoreSSH
             if (ServerType == ServerTypeEnum.Linux)
                 SSH = new SSHHandler(Server, ServerId, PamUtility.ResolvePassword(ServerPassword));
             else
-                SSH = new WinRMHandler(Server);
+                SSH = new WinRMHandler(Server, ServerId, ServerPassword);
 
             try
             {
@@ -252,12 +253,17 @@ namespace JavaKeyStoreSSH
             }
         }
 
-        internal void CreateCertificateStore(string storePath, string storePassword)
+        internal void CreateCertificateStore(string storePath, string storePassword, string linuxFilePermissions)
         {
             //No option to create a blank store.  Generate a self signed cert with some default and limited validity.
+            AreLinuxPermissionsValid(linuxFilePermissions);
+
             string keyToolCommand = $"{KeytoolPath}keytool -genkeypair -keystore '{storePath}' -storepass '{storePassword}' -dname \"cn=New Certificate Store\" -validity 1 -alias \"NewCertStore\"";
             SSH.RunCommand(keyToolCommand, null, ServerType == ServerTypeEnum.Linux && ApplicationSettings.UseSudo, StorePassword == null ? null : new string[] { StorePassword });
             DeleteCertificateByAlias("NewCertStore");
+
+            if (ServerType == ServerTypeEnum.Linux)
+                SSH.RunCommand($"chmod {linuxFilePermissions} {storePath}", null, ApplicationSettings.UseSudo, null);
         }
 
         internal void AddCertificateToStore(string alias, byte[] certBytes, bool overwrite)
@@ -284,6 +290,13 @@ namespace JavaKeyStoreSSH
             string keyToolCommand = ServerType == ServerTypeEnum.Linux ? $"which keytool" : "java -version 2>&1";
             string result = SSH.RunCommand(keyToolCommand, null, ServerType == ServerTypeEnum.Linux && ApplicationSettings.UseSudo, null);
             return !(string.IsNullOrEmpty(result));
+        }
+
+        private static void AreLinuxPermissionsValid(string permissions)
+        {
+            Regex regex = new Regex(LINUX_PERMISSION_REGEXP);
+            if (!regex.IsMatch(permissions))
+                throw new JKSException($"Invalid format for Linux file permissions.  This value must be exactly 3 digits long with each digit between 0-7 but found {permissions} instead.");
         }
 
         private List<string> FindStoresLinux(string[] paths, string[] extensions, string[] fileNames)
