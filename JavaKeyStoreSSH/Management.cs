@@ -87,7 +87,14 @@ namespace JavaKeyStoreSSH
                             Logger.Debug($"Certificate store {config.Store.StorePath} on {config.Store.ClientMachine} already exists.  No action necessary.");
                             break;
                         }
-                        jksStore.CreateCertificateStore(config.Store.StorePath, config.Store.StorePassword);
+
+                        dynamic properties = JsonConvert.DeserializeObject(config.Store.Properties.ToString());
+                        string linuxFilePermissions = properties.linuxFilePermissionsOnStoreCreation == null || string.IsNullOrEmpty(properties.linuxFilePermissionsOnStoreCreation.Value) ?
+                            ApplicationSettings.DefaultLinuxPermissionsOnStoreCreation :
+                            properties.linuxFilePermissionsOnStoreCreation.Value;
+
+                        jksStore.CreateCertificateStore(config.Store.StorePath, config.Store.StorePassword, linuxFilePermissions);
+
                         break; 
                     default:
                         return new AnyJobCompleteInfo() { Status = 4, Message = $"Site {config.Store.StorePath} on server {config.Store.ClientMachine}: Unsupported operation: {config.Job.OperationType.ToString()}" };
