@@ -1,3 +1,10 @@
+v1.9
+- Add new config.json setting DefaultLinuxPermissionsOnStoreCreation, and certificate store type custom parameter linuxFilePermissionsOnStoreCreation
+- Add ability to use client machine credentials for WinRM Windows servers rather than always using the Keyfactor service account 
+
+v1.8
+- Limit the valid characters that can be used for store paths to protect against command injection.
+
 v1.7
 - Add new config.json option: UseSCP, which if set to "Y" will use SCP rather than SFTP to upload certificate files
 - Bug fix for rare instance where certificates with a specific random text sequence in their PEM format causes and error

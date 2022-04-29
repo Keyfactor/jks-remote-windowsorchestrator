@@ -6,8 +6,6 @@
 // and limitations under the License.
 
 using System.IO;
-using System.Text;
-
 using Newtonsoft.Json;
 
 namespace JavaKeyStoreSSH
@@ -24,6 +22,9 @@ namespace JavaKeyStoreSSH
         public static bool FindKeytoolPathOnWindows { get; set; }
         public static bool UseNegotiateAuth { get; set; }
         public static bool UseSCP { get; set; }
+        public static string DefaultLinuxPermissionsOnStoreCreation { get; set; }
+
+        private const string DEFAULT_LINUX_PERMISSION_SETTING = "600";
 
         public static void Initialize(string currLocation)
         {
@@ -39,6 +40,8 @@ namespace JavaKeyStoreSSH
             }
 
             dynamic jsonContents = JsonConvert.DeserializeObject(configContents);
+
+            DefaultLinuxPermissionsOnStoreCreation = jsonContents.DefaultLinuxPermissionsOnStoreCreation == null ? DEFAULT_LINUX_PERMISSION_SETTING : jsonContents.DefaultLinuxPermissionsOnStoreCreation.Value;
 
             ValidateConfig(jsonContents);
 
