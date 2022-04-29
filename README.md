@@ -1,9 +1,18 @@
 # Remote JKS
-## windows-orchestrator
 
 The remote JKS Orchestrator allows for the remote management of Java Key Stores. Discovery, Inventory, and Management functions are supported. The orchestrator performs operations by issuing remote commands over SSH to Linux based systems and WinRM to Windows based systems.
 
-<!-- add integration specific information below -->
+#### Integration status: Production - Ready for use in production environments.
+
+## About the Keyfactor Windows Orchestrator AnyAgent
+
+This repository contains a Windows Orchestrator AnyAgent, which is a plugin to the Keyfactor Windows Orchestrator. Within the Keyfactor Platform, Orchestrators are used to manage “certificate stores” &mdash; collections of certificates and roots of trust that are found within and used by various applications.
+
+The Windows Orchestrator is part of the Keyfactor software distribution and is available via the Keyfactor customer portal. For general instructions on installing AnyAgents, see the “Keyfactor Command Orchestrator Installation and Configuration Guide” section of the Keyfactor documentation. For configuration details of this specific AnyAgent, see below in this readme.
+
+Note that in Keyfactor Version 9, the Windows Orchestrator have been replaced by the Universal Orchestrator. While this AnyAgent continues to work with the Windows Orchestrator, and the Windows Orchestrator is supported alongside the Universal Orchestrator talking to Keyfactor version 9, AnyAgent plugins cannot be used with the Universal Orchestrator.
+
+---
 
 Note that as a prerequisite for using the Remote JKS to manage/orchestrate a Linux or Windows server is that Java be installed on each server being managed/orchestrated.
 
@@ -57,7 +66,6 @@ The Java Keystore Windows AnyAgent has been tested against Keyfactor version 8.5
 In Keyfactor Command create a new Certificate Store Type similar to the one below:
 
 ![](Images/Image1.png)
-![](Images/Image11.png)
 
 - **Name** – Required. The display name of the new Certificate Store Type
 - **Short Name** – Required. **MUST** be "JKS-SSH"
@@ -68,7 +76,6 @@ In Keyfactor Command create a new Certificate Store Type similar to the one belo
 - **Private Keys** – Optional (a certificate in a Java Keystore may or may not contain a private key)
 - **PFX Password Style** – Default
 - **Job Types** – Discovery, Inventory, Add, Remove, and Create are the 4 job types implemented by this AnyAgent
-- **Linux File Permissions on Store Creation** - Optional.  Overrides the optional config.json DefaultLinuxPermissionsOnStoreCreation setting (see section 4 below) for a specific certificate store.  This value will set the file permissions (Linux only) of a new certificate store created via a Management-Create job.  If this parameter is not added or added but not set, the permissions used will be derived from the DefaultLinuxPermissionsOnStoreCreation setting.
 - **Management Job Custom Fields** - Set to "entryPassword".  This will allow users when enrolling a new certificate with certificate store delivery or adding an existing certificate to a store to specify a separate password from the certificate store password to be used as the key password for that entry.  If this field is left blank when adding a certificate to a store, the store password will be used for the key password.  You can optionally omit setting this field up on the Certificate Store Type set up screen.  In this case the key password will ALWAYS be set to the store password.
 
 **2. Register the Java Keystore AnyAgent with Keyfactor**
@@ -119,12 +126,11 @@ If you choose to manually create a Java Keystore store In Keyfactor Command rath
   
   - PAM provider information to pass the UserId/Password or UserId/SSH private key credentials
   
-  When setting up a Windows server, the format of the machine name must be – http://ServerName:5985, where &quot;5985&quot; is the WinRM port number. 5985 is the standard, but if your organization uses a different port, use that.  The Keyfactor Command service account will be used if the credentials are left blank.  **However, if you choose to not enter credentials and use the Keyfactor Command service account, it is required that the *Change Credentials* link still be clicked on and the resulting dialog closed by clicking OK.**
+  When setting up a Windows server, the format of the machine name must be – [http://_ServerName_:5985](http://ServerName:5985/), where "5985" is the WinRM port number. 5985 is the standard, but if your organization uses a different, use that.  The credentials used will be the Keyfactor Command service account.  Because of this, for Windows orchestrated servers, setting an additional set of credentials is not necessary.  **However, it is required that the *Change Credentials* link still be clicked on and the resulting dialog closed by clicking OK.**
   
-- **Store Path** – Required. The FULL PATH and file name of the Java Keystore being managed. File paths on Linux servers will always begin with a "/". Windows servers will always begin with the drive letter, colon, and backslash, such as "c:\\".  Valid characters for Linux store paths include any alphanumeric character, space, forward slash, hyphen, underscore, and period.  For Windows servers, the aforementioned characters as well as a colon and backslash.
+- **Store Path** – Required. The FULL PATH and file name of the Java Keystore being managed. File paths on Linux servers will always begin with a "/". Windows servers will always begin with the drive letter, colon, and backslash, such as "c:\\".
 - **Orchestrator** – Select the orchestrator you wish to use to manage this store
-- **Store Password** – Required. Set the store password for the Java Keystore
-- **Linux File Permissions on Store Creation** - Optional (Linux only). Set the Linux file permissions you wish to be set when creating a new physical certificate store via checking Create Certificate Store above.  This value must be 3 digits all betwwen 0-7.
+- **Store Password** – Set the store password for the Java Keystore
 - **Inventory Schedule** – Set a schedule for running Inventory jobs or none, if you choose not to schedule Inventory at this time.
 
 **3b. (Optional) Schedule a Java Keystore Discovery Job**
@@ -145,7 +151,7 @@ First, in Keyfactor Command navigate to Certificate Locations =\> Certificate St
 
   - PAM provider information to pass the UserId/Password or UserId/SSH private key credentials
 
-  When setting up a Windows server, the format of the machine name must be – http://ServerName:5985, where &quot;5985&quot; is the WinRM port number. 5985 is the standard, but if your organization uses a different port, use that.  The Keyfactor Command service account will be used if the credentials are left blank.  **However, if you choose to not enter credentials and use the Keyfactor Command service account, it is required that the *Change Credentials* link still be clicked on and the resulting dialog closed by clicking OK.**
+  When setting up a Windows server, the format of the machine name must be – [http://_ServerName_:5985](http://ServerName:5985/), where "5985" is the WinRM port number. 5985 is the standard, but if your organization uses a different, use that.  The credentials used will be the Keyfactor Command service account.  Because of this, for Windows orchestrated servers, setting an additional set of credentials is not necessary.  **However, it is required that the *Change Credentials* link still be clicked on and the resulting dialog closed by clicking OK.**
 - **When** – Required. The date and time when you would like this to execute.
 - **Directories to search** – Required. A comma delimited list of the FULL PATHs and file names where you would like to recursively search for Java Keystores. File paths on Linux servers will always begin with a "/". Windows servers will always begin with the drive letter, colon, and backslash, such as "c:\\".  Entering the string "fullscan" when Discovering against a Windows server will automatically do a recursive search on ALL local drives on the server.
 - **Directories to ignore** – Optional. A comma delimited list of the FULL PATHs that should be recursively ignored when searching for Java Keystores. Linux file paths will always begin with a "/". Windows servers will always begin with the drive letter, colon, and backslash, such as "c:\\".
@@ -180,9 +186,7 @@ As a configuration step, you must modify the config.json file, found in the plug
 
 "UseNegotiateAuth": "N",
 
-"UseSCP": "N",
-
-"DefaultLinuxPermissionsOnStoreCreation": "600"
+"UseSCP": "N"
 
 }
 
@@ -205,8 +209,6 @@ Modify the six values as appropriate (all must be present regardless of Linux or
 **UseNegotiateAuth** (Windows only) – Y/N - Determines if WinRM should use Negotiate (Y) when connecting to the remote server.
 
 **UseSCP** (Optional, Linux only) - Y/N - Detemines if SCP (Y) or SFTP (N) should be used in uploading certificate files during Management-Add jobs
-
-**DefaultLinuxPermissionsOnStoreCreation** (Linux only) - Optional.  Value must be 3 digits all between 0-7.  The Linux file permissions that will be set on a new certificate store created via a Management Create job.  This value will be used for all certificate stores managed by this orchestrator instance unless overridden by the optional "Linux File Permissions on Store Creation" custom parameter setting on a specific certificate store.  If "Linux File Permissions on Store Creation" and DefaultLinuxPermissionsOnStoreCreation are not set, a default permission of 600 will be used.
 
 
 Json format that MUST be returned by script identified in **PreRunScript** if **UsePrerunScript** is set to "Y":
@@ -233,3 +235,4 @@ KeyToolPath should contain the path where the Keytool command line program can b
     }
 
 is acceptable.
+
